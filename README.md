@@ -23,7 +23,7 @@ This project is built with **Python**, **Pandas**, **Scikit-learn**, and **Strea
 
 ## 🚀 Demo
 
-🖥️ **Live Streamlit App**: [Click to Launch](https://huggingface.co/spaces/your-app-url)  
+🖥️ **Live Streamlit App**: [Click to Launch](https://careerpredictionmlproject-6rqpvzqg6tqj7mvykgv4yc.streamlit.app/)  
 📂 **Dataset**: `career_data.csv`
 
 ---
@@ -103,29 +103,7 @@ bash
 Copy
 Edit
 streamlit run app.py
-📁 Project Structure
-kotlin
-Copy
-Edit
-career-prediction-app/
-│
-├── data/
-│   └── career_data.csv
-│
-├── models/
-│   ├── rf_model.pkl
-│   ├── scaler.pkl
-│   └── label_mapping.pkl
-│
-├── pages/
-│   ├── 1_📊_EDA.py
-│   ├── 2_🧠_Model_&_Prediction.py
-│   └── 3_✅_Conclusion.py
-│
-├── app.py
-├── requirements.txt
-└── README.md
-🖼️ Screenshots
+
 Home Page	EDA Page	Model Output
 
 🧾 Conclusion
