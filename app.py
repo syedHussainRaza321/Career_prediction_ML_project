@@ -5,6 +5,7 @@ import joblib
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
+import plotly.express as px
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
@@ -15,6 +16,9 @@ st.set_page_config(page_title="Career Prediction App", layout="wide")
 # --- Sidebar Navigation ---
 st.sidebar.image("https://cdn-icons-png.flaticon.com/512/3135/3135755.png", width=80)
 st.sidebar.title("Career Prediction")
+st.sidebar.markdown("""---
+Built with ❤️ using Streamlit
+""")
 page = st.sidebar.radio("Navigation", ["Introduction", "EDA", "Model & Prediction", "Conclusion"])
 
 # --- Generate model and preprocessing files if not exist ---
@@ -53,23 +57,19 @@ if page == "Introduction":
 
     ---
     ### 🧬 What is the OCEAN Personality Test?
-    The **OCEAN** model, also known as the Big Five personality traits, is widely used in psychology and career guidance. These traits influence decision-making, collaboration, creativity, and work style.
+    The **OCEAN** model, also known as the Big Five personality traits, is widely used in psychology and career guidance:
 
-    - **Openness**: Curiosity, creativity, and openness to new experiences.
-    - **Conscientiousness**: Organization, discipline, and goal-orientation.
-    - **Extraversion**: Sociability, assertiveness, and enthusiasm.
-    - **Agreeableness**: Compassion, cooperation, and trust in others.
-    - **Neuroticism**: Tendency to experience emotional instability and stress.
+    - **Openness**: Curiosity, creativity, and imagination.
+    - **Conscientiousness**: Responsibility and organizational skills.
+    - **Extraversion**: Energy, assertiveness, and sociability.
+    - **Agreeableness**: Compassion and cooperative nature.
+    - **Neuroticism**: Sensitivity to stress and emotional fluctuation.
 
     ### 🧠 Aptitude Skills
-    Aptitude tests measure your natural abilities in areas like:
-    - **Numerical**: Math and logic
-    - **Spatial**: Visualization and manipulation of shapes
-    - **Perceptual**: Attention to detail and identifying patterns
-    - **Abstract**: Problem-solving using concepts and symbols
-    - **Verbal**: Language understanding and communication
+    These reflect your natural strengths and are measured across:
+    - Numerical, Spatial, Perceptual, Abstract, and Verbal reasoning.
 
-    Use the sidebar to explore the data, test the model, and see your career fit!
+    Use the navigation menu on the left to explore the data and test your fit!
     """)
 
 # --- EDA Page ---
@@ -77,27 +77,19 @@ elif page == "EDA":
     st.title("📊 Exploratory Data Analysis")
     df = pd.read_csv("Data_final.csv")
 
-    st.subheader("Dataset Preview")
-    st.dataframe(df.head())
+    st.subheader("📈 Career Count Distribution")
+    career_counts = df['Career'].value_counts().reset_index()
+    career_counts.columns = ['Career', 'Count']
+    fig_pie = px.pie(career_counts, values='Count', names='Career', title='Career Share', hole=0.4)
+    st.plotly_chart(fig_pie, use_container_width=True)
 
-    st.subheader("Career Distribution")
-    fig1, ax1 = plt.subplots()
-    df['Career'].value_counts().plot(kind='bar', color='skyblue', ax=ax1)
-    ax1.set_title("Number of Students per Career")
-    ax1.set_ylabel("Count")
-    ax1.set_xlabel("Career")
-    st.pyplot(fig1)
+    st.subheader("📌 Average Trait Scores by Career")
+    selected_trait = st.selectbox("Select a trait to compare by career:", df.select_dtypes(include=np.number).columns)
+    avg_scores = df.groupby('Career')[selected_trait].mean().reset_index().sort_values(by=selected_trait)
+    fig_bar = px.bar(avg_scores, x=selected_trait, y='Career', orientation='h', color='Career', title=f"Average {selected_trait} by Career")
+    st.plotly_chart(fig_bar, use_container_width=True)
 
-    st.subheader("Feature Distributions")
-    numeric_columns = df.select_dtypes(include=np.number).columns.tolist()
-    selected_features = st.multiselect("Select features to visualize", numeric_columns, default=numeric_columns[:3])
-    for feature in selected_features:
-        fig, ax = plt.subplots()
-        sns.histplot(df[feature], kde=True, ax=ax, color='orange')
-        ax.set_title(f"Distribution of {feature}")
-        st.pyplot(fig)
-
-    st.subheader("Correlation Heatmap")
+    st.subheader("📉 Correlation Heatmap")
     corr = df.corr(numeric_only=True)
     fig, ax = plt.subplots(figsize=(10, 6))
     sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax)
@@ -107,7 +99,7 @@ elif page == "EDA":
 elif page == "Model & Prediction":
     st.title("🔍 Predict Your Career")
     st.image("https://img.freepik.com/free-vector/choose-career-concept-illustration_114360-5055.jpg", width=500)
-    st.write("Adjust the sliders based on your personality and aptitude scores, then click **Predict Career**.")
+    st.info("Use the sliders to enter your scores. Click 'Predict Career' to get a result.")
 
     with st.form("prediction_form"):
         col1, col2 = st.columns(2)
@@ -146,12 +138,12 @@ elif page == "Conclusion":
     ### Summary:
     This machine learning-powered app demonstrates how psychological (OCEAN) and aptitude traits can guide career predictions.
 
-    - ✅ Clean interface with data-driven insights
-    - 🧠 Random Forest used for accurate predictions
-    - 🔍 Interactive user inputs for live predictions
+    - ✅ Clean and interactive dashboard with visual insights
+    - 🧠 Random Forest used for robust prediction
+    - 📊 Visualizations driven by Plotly and Seaborn
 
-    We hope this app helps you gain insights into your potential career path!
+    We hope this project inspires you to explore data-driven career counseling tools.
 
-    **Thank you for visiting!** 💼
+    **Thank you for using the app!** 💼
     """)
     st.balloons()
