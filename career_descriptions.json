@@ -1,0 +1,11 @@
+career_descriptions = {
+    "Data Scientist": "Applies statistics, programming, and domain knowledge to extract insights from data.",
+    "Psychologist": "Studies human behavior and mental processes.",
+    "Software Engineer": "Designs, builds, and maintains software systems.",
+    "Graphic Designer": "Creates visual content for print and digital media.",
+    ...
+}
+
+import json
+with open("career_descriptions.json", "w") as f:
+    json.dump(career_descriptions, f, indent=4)
